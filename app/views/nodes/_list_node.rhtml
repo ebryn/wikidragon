@@ -1,0 +1,14 @@
+<li class="node">
+	<%= link_to list_node.title, :action => 'show', :id => list_node %> by <%= list_node.user.name %>
+	...
+	<%= link_to '[Edit/Remix]', :action => 'edit', :id => list_node %>
+	<% if list_node.user_id == session[ :user_id ] %>
+	... 
+	<%= link_to( '[Delete]', { :action => 'destroy', :id => list_node }, :confirm => 'Are you sure?', :method => :post ) if list_node.user_id == session[ :user_id ] %>
+	<% end %>                
+	<% if list_node.children %>
+	<ul>
+		<%= render :partial => "list_node", :collection => list_node.children %>
+	</ul>
+	<% end %>                
+</li>

@@ -1,0 +1,14 @@
+<div class="h0">
+  <%= this_node.title %>
+</div>
+
+<div>
+	<%= content %>
+</div>
+
+<% if show_creator %>
+  <div>
+    &nbsp; &nbsp; &nbsp; 
+    -- This version of <i><%= this_node.title %></i> was created or remixed by <%= this_node.user.name %>
+  </div>
+<% end %>

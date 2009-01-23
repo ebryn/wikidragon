@@ -1,0 +1,18 @@
+<div><span class="h0">Remixing the page at <%= @source[ :url ] %></span></div>
+
+<% form_for :node, @node, :url => { :action => "update", :id => @node } do | form | %>
+  <%= form.hidden_field :source_url, :value => @source[ :url ] %>
+  <p>
+    <label for="node_title">Title</label>
+    <br />
+    <%= form.text_field :title, :value => @source[ :title ] %>
+  </p>
+  <p>
+  <label for="node_content">Content</label>
+  <br />
+  <small >(Note that you can use <span onClick="window.open('http://greg.vario.us/doc/markdown.txt','markdown_ref','scrollbars=yes,width=750,height=550')"><a href="javascript:void(0);">Markdown syntax</a></span> for formatting)</small>
+    <%= form.text_area :content, :value => @source[ :content ] %>
+  </p>
+  <%= submit_tag "Save" %>
+<% end %>
+

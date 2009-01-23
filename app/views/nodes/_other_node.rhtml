@@ -1,0 +1,17 @@
+<div class="top-pad diffs">
+  <hr/>
+  <div class="diff-header">
+    Differences between
+    <%= @node.title %> by
+    <%= @node.user.name %>
+    (<%= @node.friendly_date %>)
+    and 
+    <%= other_node.title %> by
+    <%= other_node.user.name %>
+    (<%= other_node.friendly_date %>)
+  </div>
+  <hr/>
+  <%= render :partial => "this_node", :object => other_node,
+      :locals => { :content => Node.html_content_with_differences( @node, other_node ), :show_creator => false } %>
+</div>
+

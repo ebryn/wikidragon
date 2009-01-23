@@ -1,0 +1,280 @@
+Index: app/controllers/nodes_controller.rb
+===================================================================
+--- app/controllers/nodes_controller.rb	(revision 136)
++++ app/controllers/nodes_controller.rb	Mon Jan 19 22:41:16 PST 2009
+@@ -1,5 +1,5 @@
+ class NodesController < ApplicationController
+-  
++
+   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+   verify :method => :post, :only => [ :destroy, :create, :update ], :redirect_to => { :action => :list }
+ 
+@@ -10,11 +10,8 @@
+     render :action => 'list'
+   end
+ 
+-  #
+-  # list nodes, in order of relevance to user
+-  #
+   def list
+-    @nodes = Node.find( :all, :order => 'updated_at DESC', :conditions => ['parent_id IS ?', nil] )    
++    @nodes = Node.find( :all, :order => 'updated_at DESC', :conditions => ['parent_id IS ?', nil] )
+   end
+ 
+   def show
+@@ -29,18 +26,17 @@
+     end
+   end
+ 
+-  def new
+-    @node = Node.new
+-  end
+-
+   def create
+     @node = Node.new( params[ :node ] )
+     @node.user_id = session[ :user_id ]
+-    if @node.save
++    if @node.valid?
++      @node.save!
++      @node.update_attributes( :url => nodes_url( @node ) )
+       flash[ :notice ] = 'Node was successfully created.'
+       redirect_to :action => 'list'
+     else
+-      flash[ :error ] = 'Please enter both a title and content for your Genius Node...'
++      flash[ :error ] = "Node creation failed: " +
++          @node.errors.map{ |field, msg| "#{field} #{msg}" }.join( ', ' )
+       render :action => 'new'
+     end
+   end
+@@ -58,7 +54,7 @@
+       else
+         render :action => 'edit'
+       end
+-    else                    
++    else
+       remix_node_params = params[ :node ].merge( :user_id => session[ :user_id ] )
+       @remix = @node.remix( remix_node_params )
+       if @remix.save
+@@ -73,7 +69,7 @@
+ 
+   def destroy
+     node = Node.find( params[ :id ] )
+-    if node.user_id == session[ :user_id ] 
++    if node.user_id == session[ :user_id ]
+       node.destroy
+     else
+       flash[ :error ] = 'The node you tried to delete was created by another user; please only remove nodes which you created.'
+Index: app/views/remote_node/edit.html.erb
+===================================================================
+--- app/views/remote_node/edit.html.erb	(revision 136)
++++ app/views/remote_node/edit.html.erb	Tue Dec 23 23:10:57 PST 2008
+@@ -1,17 +1,19 @@
+-<div><span class="h0">Remixing the page at <%= @source[ :url ] %></span></div>
++<div><span class="h0">Remixing the page at <%= @source_node[ :url ] %></span></div>
+ 
+-<% form_for :node, @node, :url => { :action => "update", :id => @node } do | form | %>
+-  <%= form.hidden_field :source_url, :value => @source[ :url ] %>
++<% form_for( :node, @source_node, :url => remote_node_path( @source_node ), :html => { :method => :put } ) do | form | %>
+   <p>
+     <label for="node_title">Title</label>
+     <br />
+-    <%= form.text_field :title, :value => @source[ :title ] %>
++    <%= form.text_field :title %>
+   </p>
+   <p>
+   <label for="node_content">Content</label>
+   <br />
+-  <small >(Note that you can use <span onClick="window.open('http://greg.vario.us/doc/markdown.txt','markdown_ref','scrollbars=yes,width=750,height=550')"><a href="javascript:void(0);">Markdown syntax</a></span> for formatting)</small>
+-    <%= form.text_area :content, :value => @source[ :content ] %>
++  <small >(Note that you can use
++    <span onClick="window.open('http://greg.vario.us/doc/markdown.txt',
++      'markdown_ref','scrollbars=yes,width=750,height=550')"><a
++      href="javascript:void(0);">Markdown syntax</a></span> for formatting)</small>
++    <%= form.text_area :content %>
+   </p>
+   <%= submit_tag "Save" %>
+ <% end %>
+Index: spec/models/node_spec.rb
+===================================================================
+--- spec/models/node_spec.rb	(revision 136)
++++ spec/models/node_spec.rb	Mon Jan 19 22:39:06 PST 2009
+@@ -1,20 +1,30 @@
+-require File.dirname(__FILE__) + '/../spec_helper'
++require File.join( File.dirname(__FILE__), '../spec_helper' )
++require File.join( File.dirname(__FILE__), '../mom' )
+ 
+ describe Node do
+ 
+   describe ".new" do
+     it "should not have a parent node when newly created" do
+-      user  = User.create!( :name => 'user' )
+-      node  = Node.create!( :title => 'node', :content => 'stuff', :user => user )
+-      node.parent.should be_nil
++      create_node.parent.should be_nil
+     end
++
++#    it "should create expected url" do
++#      user = create_user( :name => 'Harlan Knight' )
++#      node = create_node( :user => user, :title => 'Trust Exchange' )
++#      node.url.should =~ %r{^http://example.com/nodes/Harlan_Knight/Trust_Exchange/\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}$}
++#    end
++#
++#    it "should create expected url" do
++#      user = create_user( :name => 'Jim Smith' )
++#      node = create_node( :user => user, :title => 'Blurp Forever' )
++#      node.url.should =~ %r{^https://www.jimsmith.com/nodes/Jim_Smith/Blurp_Forever/\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}$}
++#    end
+-  end                                        
++  end
+ 
+-  describe "associating with a parent node" do
++  describe "#children (from act_as_tree)" do
+     it "should be the child of its parent node" do
+-      user  = User.create!( :name => 'user' )
+-      parent_node = Node.create!( :title => 'x', :content => 'x', :user => user )
+-      child_node = parent_node.children.create!( :title => 'x', :content => 'x', :user => user )
++      parent_node = create_node
++      child_node = parent_node.children.create!( node_params )
+       child_node.parent.should == parent_node
+       parent_node.children.should == [ child_node ]
+     end
+@@ -22,30 +32,29 @@
+ 
+   describe ".html_content_with_differences" do
+     it "should leave html unchanged when diffing against identical node" do
+-      node1 = Node.new( :title => 'my node', :content => 'stuff' )
+-      node2 = Node.new( :title => 'my node', :content => 'stuff' )
++      node1 = create_node( :content => 'stuff' )
++      node2 = create_node( :content => 'stuff' )
+       node1.content_html.should                                 == '<p>stuff</p>'
+       Node.html_content_with_differences( node1, node2 ).should == '<p>stuff</p>'
+     end
+ 
+     it "should produce html ins and del tags representing insertions and deletions" do
+-      node1 = Node.new( :title => 'my node', :content => 'Stuff and more stuff' )
+-      node2 = Node.new( :title => 'my node', :content => 'Stuff hurts' )
++      node1 = create_node( :content => 'Stuff and more stuff' )
++      node2 = create_node( :content => 'Stuff hurts' )
+       Node.html_content_with_differences( node1, node2 ).should ==
+           '<p>Stuff <ins>hurts</ins> <del>and more stuff</del></p>'
+     end
+   end
+ 
+   describe "#remix" do
+-    it "should create a new node when remixed" do
+-      orig_user  = User.create!( :name => 'orig_user' )
+-      remix_user = User.create!( :name => 'remix_user' )
+-      orig_node  = Node.create!( :title => 'orig node', :content => 'stuff', :user => orig_user )
+-      remix_node = orig_node.remix( :title => 'remix node', :content => 'more stuff', :user => remix_user )
++    it "should create a new node, whose parent is the original node" do
++      orig_node = create_node
++      remixer = create_user
++      remix_node = orig_node.remix( :title => 'remix node', :content => 'remix content', :user => remixer )
+       remix_node.reload   # make sure it's saved in the DB
+       remix_node.title.should == 'remix node'
+-      remix_node.content.should == 'more stuff'
+-      remix_node.user.should == remix_user
++      remix_node.content.should == 'remix content'
++      remix_node.user.should == remixer
+       remix_node.parent.should == orig_node
+       orig_node.parent.should be_nil
+     end
+Index: app/controllers/remote_node_controller.rb
+===================================================================
+--- app/controllers/remote_node_controller.rb	(revision 136)
++++ app/controllers/remote_node_controller.rb	Fri Jan 23 00:00:16 PST 2009
+@@ -4,20 +4,26 @@
+ #  skip_before_filter :verify_authenticity_token, :only => :create
+ 
+   def edit
+-    @source = {}
+-    @source[ :url ] = params[ :url ]
+-    url = %r{^https?://([^/]+)/.+/([^/]+)/$}.match( @source[ :url ] )
+-    @source[ :title ] = url[ 2 ]  # assumes selfdotpublish URL pattern
++    @source_node = {}
++    @source_node[ :url ] = params[ :url ]
++    url = %r{^https?://([^/]+)/.+/([^/]+)/$}.match( @source_node[ :url ] )
+     site_name = url[ 1 ]
+-    source_markdown_url = "#{@source[ :url ]}content.markdown.txt"             # assumes selfdotpublish markdown file
++    @source_node[ :title ] = url[ 2 ]  # assumes selfdotpublish URL pattern
++    source_markdown_url = "#{@source_node[ :url ]}content.markdown.txt"             # assumes selfdotpublish markdown file
+     response = Net::HTTP.get_response( URI.parse( source_markdown_url ) )
+-    raise "Errors when getting '#{@source[ :url ]}': #{response.inspect}" unless response.kind_of? Net::HTTPSuccess
+-    @source[ :content ]= response.body
+-    @source[ :user ] = User.find_or_create_by_name( site_name )
+-    Node.create!( @source )
++    raise "Errors when getting '#{@source_node[ :url ]}': #{response.inspect}" unless response.kind_of? Net::HTTPSuccess
++    @source_node[ :content ]= response.body
++    @source_node[ :user ] = User.find_or_create_by_name( site_name )
++    @source_node = Node.create!( @source_node )
+   end
+ 
+   def update
++    @source_node = Node.find( params[ :id ] )
++    remix_node_params = params[ :node ].merge(
++        :user_id => session[ :user_id ],
++        :url => nodes_url )
++    @source_node.remix( remix_node_params ).save!
++    flash[ :notice ] = 'Node was successfully created.'
+     redirect_to root_path
+   end
+ 
+Index: app/models/user.rb
+===================================================================
+--- app/models/user.rb	(revision 136)
++++ app/models/user.rb	Thu Dec 25 20:41:52 PST 2008
+@@ -3,4 +3,8 @@
+   has_many :nodes
+   validates_uniqueness_of :name
+ 
++#  def name_for_url
++#    name.gsub( /\s+/, '_' )
++#  end
++
+ end
+Index: app/views/nodes/new.rhtml
+===================================================================
+--- app/views/nodes/new.rhtml	(revision 136)
++++ app/views/nodes/new.rhtml	Thu Dec 25 14:59:19 PST 2008
+@@ -2,12 +2,12 @@
+ 
+ <% form_for :node, @node, :url => { :action => "create" } do | form | %>
+   <p>
+-  <label for="node_title">1) A title, if you please...</label>
++  <label for="node_title">Title:</label>
+   <br />
+   <%= form.text_field :title %>
+   </p>
+   <p>
+-  <label for="node_content">2) And now, your nugget of genius awesomeness...</label>
++  <label for="node_content">Content:</label>
+   <br />
+   <small>(Note that you can use <span onClick="window.open('http://greg.vario.us/doc/markdown.txt','markdown_ref','scrollbars=yes,width=750,height=550')"><a href="javascript:void(0);">Markdown syntax</a></span> for formatting)</small>
+   <br />
+Index: db/schema.rb
+===================================================================
+--- db/schema.rb	(revision 136)
++++ db/schema.rb	Mon Jan 19 22:29:11 PST 2009
+@@ -9,19 +9,18 @@
+ #
+ # It's strongly recommended to check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(:version => 20081205164851) do
++ActiveRecord::Schema.define(:version => 20081224062352) do
+ 
+   create_table "nodes", :force => true do |t|
+-    t.integer  "user_id",    :limit => 11, :null => false
+     t.string   "title"
+     t.text     "content"
++    t.integer  "user_id",    :limit => 11
+     t.datetime "created_at"
+     t.datetime "updated_at"
+     t.integer  "parent_id",  :limit => 11
++    t.string   "url"
+   end
+ 
+-  add_index "nodes", ["user_id"], :name => "fk_nodes_users"
+-
+   create_table "users", :force => true do |t|
+     t.string   "name"
+     t.datetime "created_at"

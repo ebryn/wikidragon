@@ -1,0 +1,6 @@
+<%= render :partial => "this_node", :object => @node, 
+  :locals => { :content => @node.content_html, :show_creator => true } %>
+<%= render :partial => "other_node", :collection => @node.children %>
+
+
+

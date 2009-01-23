@@ -1,0 +1,17 @@
+<div><span class="h0">Edit this Genius Node</span></div>
+
+<% form_for :node, @node, :url => { :action => "update", :id => @node } do | form | %>
+  <p>
+    <label for="node_title">1) The title...</label>
+    <br />
+    <%= form.text_field :title %>
+  </p>
+  <p>
+  <label for="node_content">2) And... the genius awesomeness! Remix it to your heart's content...</label>
+  <br />
+  <small>(Note that you can use <span onClick="window.open('http://greg.vario.us/doc/markdown.txt','markdown_ref','scrollbars=yes,width=750,height=550')"><a href="javascript:void(0);">Markdown syntax</a></span> for formatting)</small>
+    <%= form.text_area :content %>
+  </p>
+  <%= submit_tag "Save" %>
+<% end %>
+

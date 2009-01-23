@@ -1,0 +1,22 @@
+Are you one of our friends already?  If so, click on your button below:
+<br />
+<br />
+<% for user in @users %>
+  <% form_for :user do | form | %>
+    <input type="hidden" id="user_name" name="user[name]" value="<%= user.name %>">
+    <input type="hidden" id="user_id"   name="user[id]"   value="<%= user.id %>">
+    <%= submit_tag "I am #{user.name}" %>
+  <% end %>
+  &nbsp;
+<% end %>
+
+<br />
+<br />
+
+<% form_for :user do | form | %>
+  <label for="name">If you're not listed above, please enter a username:</label>
+  <%= form.text_field :name %>
+  <%= submit_tag "Log me in" %>
+<% end %>
+
+
