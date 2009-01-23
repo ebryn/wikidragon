@@ -1,6 +1,6 @@
 # capistrano deploy recipes
 
-set :repository, 'TODO: github repo url'
+set :repository, "git://github.com/onesunone/wikidragon.git"
 
 role :web, "mydomain.com"
 role :app, "mydomain.com"

@@ -4,19 +4,20 @@ require File.dirname(__FILE__) + '/../lib/shell'
 
 export_dir = "#{RAILS_ROOT}/../public_branch"
 
-run "rm -rf #{export_dir}"
-run "cp -r #{RAILS_ROOT} #{export_dir}"
+run "rm -rf #{export_dir}/*"   # we remove the content of the project, but not the .git directory!
+run "cp -r #{RAILS_ROOT}/* #{export_dir}/"
 
 # remove .svn dirs
 run "rm -rf `find #{export_dir} -type d -name .svn`"
 
 # replace sensitive files with example files
-run "mv #{export_dir}/config/deploy_example.rb #{export_dir}/config/deploy.rb"
+run "mv #{export_dir}/config/deploy_example.rb    #{export_dir}/config/deploy.rb"
 run "mv #{export_dir}/config/database_example.yml #{export_dir}/config/database.yml"
-run "mv #{export_dir}/cruise_config_example.rb #{export_dir}/cruise_config.rb"
-run "rm -f #{export_dir}/cruise.sh"
-run "rm -f #{export_dir}/config/database.yml.*"
+run "mv #{export_dir}/cruise_config_example.rb    #{export_dir}/cruise_config.rb"
 
-# remove dirs
-%w[ .idea backup components db/backup doc log tmp/* ].each{ |dir| run "rm -rf #{export_dir}/#{dir}" }
+# remove files and dirs
+%w[ .idea backup components config/database.yml.* cruise.sh db/backup doc log tmp/* ].each do |dir|
+  run "rm -rf #{export_dir}/#{dir}"
+end
+
 
