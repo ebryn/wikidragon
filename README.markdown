@@ -4,4 +4,7 @@ The current version is hardcoded to a single template (Open Source Genius Club).
 
 This was my first rails app as a newbie, so it's highly imperfect : )
 
-For the more on the ideas behind WikiDragon, please see [http://enlightenedstructure.info/pub/WikiDragon][].
+For the more on the ideas behind WikiDragon, please see [http://enlightenedstructure.info/pub/WikiDragon][].                        
+
+
+
