@@ -1,267 +1,61 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <title>Open Source Genius Club (create ::: remix)</title>
-
-  <style>
-  body {
-    background:#FFFFFF url(/images/osgc-bg.gif) center top repeat;
-    text-align:center;
-    margin:0px;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 70%;
-    color:#444;
-  }
-  .h0, h1, h2, h3
-  {
-    font-family: copperplate gothic bold, trebuchet ms, verdana, arial, helvetica, sans-serif;
-  }
-  div.h0
-  {
-    font-size: 1.61803em; 
-    font-weight: normal;
-    text-align: center;
-    color: #7D004E; 
-	text-align: center;
-  }
-  h1
-  {
-    font-size: 1.44em; 
-    font-weight: bold;
-    border-bottom: 2px solid #bbb;
-    margin-top: 1em;
-    padding-top: .2em;
-    padding-bottom: .2em;
-    border-top: 2px dotted #AAA;
-    border-bottom: 2px dotted #AAA;
-  }
-/*  ul, li
-  {
-    margin: 0; 
-    padding: 0; 
-    border: 0; 
-    outline: 0; 
-    list-style: none;
-  }                     */
-  li
-  {
-    margin-left: 0em;
-    margin-right: 0em;
-    margin-top: .34em;
-    margin-bottom: .34em; 
-  }                     
-  a:link, a:active {
-    color:ff00ff;
-    text-decoration:none;
-  }
-  a:visited {
-    color:#CC00FF;
-    text-decoration:none;
-  }
-  a:hover {
-    color:#FF9900;
-    text-decoration:underline;
-  }
-  input[type="text"], textarea {
-    width: 100%;
-  }
-
-  .top-pad { 
-    margin-top: 2em;
-  }
-
-  .flash-msg 
-  { 
-    font-size: 125%; 
-    width: 95%; 
-    padding: 1em; 
-    margin-top: 1.44em;
-  }
-
-  .flash-msg.success, .flash-msg.notice 
-  { 
-    background-color: #CFC; 
-    border: 1px solid #080; 
-    color: #060; 
-  }
-
-  .flash-msg.error 
-  { 
-    background-color: #FDD; 
-    border: 1px solid #B00; 
-    color: #B00; 
-  }
-
-  /* diffs */
-  .diff-header {
-  }                 
-
-  div.diffs { 
-    background-color: #AAA; 
-    padding: 3em;
-  }
-  .this-node,  .diff_insert, ins { background-color: #FF7; text-decoration: none; }  
-  .other-node, .diff_delete, del { text-decoration: line-through; }  
-
-  /*
-  #wrapper {
-    margin: 0px auto;
-    width:1000px;
-    text-align:left;
-    display:block;
-  }
-  */
-  #header {
-    margin: 0px auto;
-    width:1000px;
-    /*height:300px;*/
-  }
-  #main {
-    margin: 0px auto;
-    width:1000px;
-    background: url(/images/open_source_genius_club_content.jpg) center top no-repeat;
-    /*min-height:300px;*/
-  }
-  #content-header {
-    display:block;
-    margin:0px auto;
-    width:1000px;
-    /*max-height:70px;*/
-  }
-  #button-left {
-    display:block;
-    float:left;
-    margin: 0px auto;
-    width:300px;
-    height:70px;
-    min-height:70px;
-  }
-  #top-content {
-    display:block;
-    margin: 0px auto;
-    min-width:400px;
-    width:400px;
-    color:#777;
-    /* height:70px; */
-    /*min-height:70px*/
-    font-family:Verdana, Arial, Helvetica, sans-serif;
-  }
-  #button-right {
-    display:block;
-    float:right;
-    margin: 0px auto;
-    width:300px;
-    height:70px;
-    min-height:70px;
-  }
-  #content {
-    margin: 0px auto;
-    width: 633px;
-    text-align:left;
-    font-family:Verdana, Arial, Helvetica, sans-serif;
-    min-height:300px;
-    color:#111;
-  }              
-  #author_content {
-    margin-top: 2.2em;   
-    margin-bottom: 3em; 
-  }              
-  #licence {
-    margin-top: 27px;   /* trust me, image related */
-    margin-bottom: 1em; 
-    color: #777;
-  }
-  #footer {
-    vertical-align:bottom;
-    margin: 0px auto;
-    width:1000px;
-    height:50px;
-    /*min-height:300px;*/
-    background: url(/images/osgc-footer.jpg) center bottom no-repeat;
-    /*border: 1px red solid;*/
-    margin-top:-70px;
-    padding-top: 150px;
-
-  }
-
-  /*]]>*/
-  </style>
-
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+  <title></title>
 </head>
 
 <body>
-  <div id="container">
-    <div id="header"><a href="/" title="Home"><img src="/images/open_source_genius_club.jpg" border="0" /></a></div>
-    <div id="main">
+<div id="container">
+  <div id="main">
+    <div id="content-header">
+      <% if @nodes %>
+        <a href="/nodes/new">Create</a>
+      <% end %>
+      <% if controller.action_name == 'show' %>
+        <a href="/nodes/edit/<%= @node.id %>">Remix</a>
+      <% end %>
+      <div id="top-content">
+        <%= flash_msg :error %>
+        <%= flash_msg :notice %>
+        <%= flash_msg :success %>
+      </div>
+    </div>
+    <div id="content">
+      <div id="author_content">
+        <%= yield %>
+      </div>
 
-      <!-- Buttons and Top Content -->
-      <div id="content-header"> 
-        <% if @nodes %>
-        <div id="button-left"><img src="/images/buttons_create.jpg" alt="Create Button" border="0" usemap="#Map" />
-          <map name="Map" id="Map"><area shape="circle" coords="100,36,17" href="/nodes/new" title="Create a new node" /></map></div>
-          <% end %>
-          <% if controller.action_name == 'show' %>
-          <div id="button-right"><img src="/images/buttons_remix.jpg" alt="Remix Button" border="0" usemap="#Map2" />
-            <map name="Map2" id="Map2"><area shape="circle" coords="199,36,17" href="/nodes/edit/<%= @node.id %>" /></map></div>
-            <% end %>
-            <div id="top-content">
-              <div>
-                <small>[ 0.2 beta ]</small>
-              </div>
-              <%= flash_msg :error %>
-              <%= flash_msg :notice %>
-              <%= flash_msg :success %>
-            </div>
-          </div> 
-          <!-- end content-header -->
+      <hr clear="both"/>
 
+      <table style="margin: 0em; padding: 0em; font-size: 90%; text-align: right">
+        <tr>
+          <td>
+            <i>
+              This is virally licenced Free IP.
+              You are free to copy, share, modify, and remix this work,
+              for free or for profit,
+              on the condition that you attribute this URL as a source,
+              and share any copies and remixes under the same
+              <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative
+                Commons licence</a>.
+            </i>
+          </td>
+          <td>
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img
+            alt="Creative Commons License" style="border-width:0" align="right"
+            src="http://creativecommons.org/images/public/somerights20.png"/></a>
+          </td>
+        </tr>
+      </table>
 
-          <div id="content">
-
-            <div id="licence"> 
-			  &nbsp;
-            </div>
-
-			<div id="author_content">
-              <%= yield %>                          
-  			</div>
-
-			<hr clear="both" />
-
-			<table style="margin: 0em; padding: 0em; font-size: 90%; text-align: right">
-			  <tr>
-			    <td>
-			      <i>
-				  	This is virally licenced Free IP. 
-					You are free to copy, share, modify, and remix this work, 
-			        for free or for profit,
-			        on the condition that you attribute this URL as a source, 
-			        and share any copies and remixes under the same 
-			        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative 
-			          Commons licence</a>.  
-			      </i> 
-			    </td>
-			    <td>
-			      <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img 
-			        alt="Creative Commons License" style="border-width:0" align="right"
-			        src="http://creativecommons.org/images/public/somerights20.png" /></a> 
-			    </td>
-			  </tr>
-			</table>
-
-    		<div style="text-align: right">
-              <a href="../../"  style="color: #888;">[home]</a>
-              &nbsp;
-              <a href="mailto:enlightenment7@thegoldensun.com" style="color: #888;">[contact]</a>
-              &nbsp;
-              <a style="color: #888;" href="http://enlightenedstructure.info/pub/WikiDragon">[powered by WikiDragon]</a>
-            </div>
-
-            </div> <!-- end content -->
-          </div> <!-- end main -->
-          <div id="footer">
-          </div> <!-- end footer -->
-        </div> <!-- end container -->
-      </body>
-      </html>
+      <div style="text-align: right">
+        <a href="../../" style="color: #888;">[home]</a>
+        &nbsp;
+        <a style="color: #888;" href="http://enlightenedstructure.info/pub/WikiDragon">[powered by WikiDragon]</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

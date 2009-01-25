@@ -19,7 +19,6 @@ namespace :deploy do
     run "ln -sf #{release_path}/../../database.yml #{release_path}/config/database.yml"
   end
 
-  # TODO dup of above, one can be removed
   task :after_symlink, :roles => [:web, :app] do
     run "ln -sf #{release_path}/../../database.yml #{release_path}/config/database.yml"
   end
