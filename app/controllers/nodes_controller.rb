@@ -40,7 +40,7 @@ class NodesController < ApplicationController
       flash[ :notice ] = 'Node was successfully created.'
       redirect_to :action => 'list'
     else
-      flash[ :error ] = 'Please enter both a title and content for your Genius Node...'
+      flash[ :error ] = 'Please enter both a title and content'  #TODO display @node.errors
       render :action => 'new'
     end
   end
@@ -65,7 +65,7 @@ class NodesController < ApplicationController
         flash[ :notice ] = 'Node was successfully created.'
         redirect_to :action => 'list'
       else
-        flash[ :error ] = 'Please enter both a title and content for your Genius Node...'
+        flash[ :error ] = 'Please enter both a title and content.'
         render :action => 'update'
       end
     end

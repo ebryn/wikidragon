@@ -23,7 +23,7 @@ namespace :deploy do
     run "ln -sf #{release_path}/../../database.yml #{release_path}/config/database.yml"
   end
 
-  # this works on dreamhost, do what you need to restart on your host here
+  # this works on my server, do what you need to restart on your host here
   task :restart, :roles => :app do
     run "touch #{current_path}/tmp/restart.txt"
   end

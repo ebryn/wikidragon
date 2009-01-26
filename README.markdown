@@ -1,7 +1,5 @@
 WikiDragon is a creative collaboration engine, a way for users to create and remix Free IP.
 
-This was my first rails app as a newbie, so it's highly imperfect : )
-
 Installation
 ============
 You need to have an operational Ruby on Rails (2.2.2) environment to run WikiDragon.  If you don't start at http://rubyonrails.org.
@@ -13,5 +11,10 @@ You need to have an operational Ruby on Rails (2.2.2) environment to run WikiDra
 
 Inspiration
 ===========
-For the more on the ideas behind WikiDragon, please see [http://enlightenedstructure.info/pub/WikiDragon][].
+[The ideas behind WikiDragon][wd].
 
+Disclaimer
+==========    
+This was my first rails app as a newbie, so it's clunky in places, but works fine.
+
+[wd]: http://enlightenedstructure.info/pub/WikiDragon

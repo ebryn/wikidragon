@@ -2,11 +2,14 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   map.root :controller => 'nodes'
+  map.connect '/wikidragon', :controller => 'nodes'       
 
   # note that starting with a captial letter is the only way to distinguish these links from controller/action links
   # matches (eg) /nodes/Trust Exchange/ 
-  map.connect 'nodes/:title', :controller => 'nodes', :action => 'show', :requirements => { :title => %r{[A-Z][^/]+} }       
-  # matches (eg) /Trust Exchange/ 
+  map.connect '/nodes/:title', :controller => 'nodes', :action => 'show', :requirements => { :title => %r{[A-Z][^/]+} }       
+  map.connect '/pub/:title', :controller => 'nodes', :action => 'show', :requirements => { :title => %r{[A-Z][^/]+} }
+
+  # matches (eg) /Trust Exchange/
   map.connect '/:title',       :controller => 'nodes', :action => 'show', :requirements => { :title => %r{[A-Z][^/]+} }
 
   map.nodes '/nodes/:id', :controller => 'nodes', :action => 'show', :requirements => { :id => /\d+/ }

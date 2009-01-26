@@ -1,13 +1,20 @@
-* generate url on create -- wd.com/nodes/Harlan_Knight/Trust_Exchange/2008_11_31_11_59_01
-* bug: remixing remote nodes is broken when you're not logged into wikidragon!
+For Hackfest for the Light
+==========================
+* check screenplay formatting (dialog etc) -- apply my styles!
+
+Later
+=====
+* Printable screenplay version
+
 * bug: diffs seem wrong, eg version of screenplay summary with only first two paras vs whole summary
-* bug: flash errors persist too long.  eg create node with no title, see flash error, click top bar to go 'home' -- still flash.  
-----
+* bug: flash errors persist too long.  eg create node with no title, see flash error, click top bar to go 'home' -- still flash.
+
+* in remote_nodes branch:
+  * generate url on create -- wd.com/nodes/Harlan_Knight/Trust_Exchange/2008_11_31_11_59_01
+  * bug: remixing remote nodes is broken when you're not logged into wikidragon!
 
 * more story tests
 * replace assert_select with response.should.have_tag in stories -- not sure why this is broken.  maybe upgrading rspec would fix this?
-
-----
 
 * text field to enter tags on node edit/create
 * tag cloud at top of front page
@@ -102,8 +109,6 @@
 ----
 
 * show all discovered nodes
-
-* run rspec in cruise...
 
 * generate rdoc
 
