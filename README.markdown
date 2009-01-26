@@ -12,8 +12,11 @@ You need to have an operational Ruby on Rails (2.2.2) environment to run WikiDra
 
 Inspiration
 ===========
-Read about [the ideas behind WikiDragon][http://enlightenedstructure.info/pub/WikiDragon].
+Read about [the ideas behind WikiDragon][wd].
+
 
 Disclaimer
 ==========    
 This was my first rails app as a newbie, so it's clunky in places, but works fine.
+
+[wd]: http://enlightenedstructure.info/pub/WikiDragon
