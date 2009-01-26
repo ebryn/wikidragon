@@ -3,6 +3,7 @@ WikiDragon is a creative collaboration engine, a way for users to create and rem
 Installation
 ============
 You need to have an operational Ruby on Rails (2.2.2) environment to run WikiDragon.  If you don't start at http://rubyonrails.org.
+
 1. Download: git clone git://github.com/onesunone/wikidragon.git
 2. In a terminal window, change to the wikidragon directory.
 3. Execute 'rake db:migrate'
@@ -11,7 +12,8 @@ You need to have an operational Ruby on Rails (2.2.2) environment to run WikiDra
 
 Inspiration
 ===========
-[The ideas behind WikiDragon][wd].
+Read about [the ideas behind WikiDragon][wd].
+
 
 Disclaimer
 ==========    
