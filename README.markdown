@@ -14,7 +14,6 @@ Inspiration
 ===========
 Read about [the ideas behind WikiDragon][wd].
 
-
 Disclaimer
 ==========    
 This was my first rails app as a newbie, so it's clunky in places, but works fine.
