@@ -15,7 +15,7 @@ class Node < ActiveRecord::Base
 #  end
 
   def content_html
-    BlueCloth.new( self.content ).to_html
+    ScreenplayFormatter.from_text( self.content )
   end
 
   def remix( args )
